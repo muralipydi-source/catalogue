@@ -5,6 +5,10 @@ pipeline {
 
    environment {
        appVersion = ''
+       REGION = 'us-east-1'
+       ACC_ID = '898080060887'
+       PROJECT = 'roboshop'
+       COMPONENT = 'catalogue'
    }
  //Build
  stages {
@@ -33,6 +37,19 @@ pipeline {
                    // if (packageJson.scripts && packageJson.scripts.test) {
                      //   echo "Test script: ${packageJson.scripts.test}"
                     //}
+                }
+            }
+    }
+    stage('Docker Build') {
+            steps {
+                script {
+                      withAWS(credentials: 'aws-credentials', region: ${REGION}) {
+                       sh """
+                           aws ecr get-login-password --region ${REGION} | docker login --username AWS --password-stdin ${ACC_ID}.dkr.ecr.${REGION}.amazonaws.com
+                           docker build -t ${ACC_ID}.dkr.ecr.${REGION}.amazonaws.com/${PROJECT}/$COMPONENT}:${appVersion}
+                           docker push ${ACC_ID}.dkr.ecr.${REGION}.amazonaws.com/${PROJECT}/$COMPONENT}:${appVersion}
+                      """
+                      }
                 }
             }
     }
