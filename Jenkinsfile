@@ -3,8 +3,25 @@ pipeline {
         label 'AGENT-1'
    }
 
+   environment {
+       appVersion = ''
+   }
  //Build
  stages {
+    stage('Read package.json') {
+            steps {
+                script {
+                    def packageJson = readJSON file: 'package.json'
+                    appVersion = packageJson.version //echo "Project Name: ${packageJson.name}"
+                    echo "Package Version: ${appVersion}"
+
+                    // Accessing a script, for example
+                   // if (packageJson.scripts && packageJson.scripts.test) {
+                     //   echo "Test script: ${packageJson.scripts.test}"
+                    //}
+                }
+            }
+    }
     stage('Build') {
             steps {
                 script {
@@ -12,6 +29,7 @@ pipeline {
                 }
              }
     }
+    
     stage('Test') {
             steps {
                 script {
