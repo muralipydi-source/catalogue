@@ -22,6 +22,20 @@ pipeline {
                 }
             }
     }
+    stage('Install Dependencies') {
+            steps {
+                script {
+                      sh """
+                         npm install
+                      """
+
+                    // Accessing a script, for example
+                   // if (packageJson.scripts && packageJson.scripts.test) {
+                     //   echo "Test script: ${packageJson.scripts.test}"
+                    //}
+                }
+            }
+    }
     stage('Build') {
             steps {
                 script {
